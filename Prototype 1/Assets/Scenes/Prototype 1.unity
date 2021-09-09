@@ -568,7 +568,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
   m_LocalRotation: {x: 0.20649622, y: -0, z: -0, w: 0.9784474}
-  m_LocalPosition: {x: 0, y: 5.89, z: -6.8}
+  m_LocalPosition: {x: 0, y: 5, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -583,9 +583,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 534669902}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f67d2766c80eb9542b45f4bd9d02639a, type: 3}
+  m_Script: {fileID: 11500000, guid: b124036bfef657e46a6d17c1d57b2f1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1908901512}
 --- !u!1001 &698249014
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1036,6 +1037,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f94e2c0e695881449768d90334af7b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 15
+  turnSpeed: 50
+  horizontalInput: 0
+  forwardInput: 0
 --- !u!54 &1908901518
 Rigidbody:
   m_ObjectHideFlags: 0

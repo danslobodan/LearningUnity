@@ -17,12 +17,11 @@ public class Ball : MonoBehaviour
     {
         if (transform.position != destination)
         {
-            Debug.Log(destination);
             transform.position = new Vector3(destination.x, transform.position.y, destination.z);
         }
     }
 
-    public void OnTilePress(Vector3 destination)
+    public void MoveBall(Vector3 destination)
     {
         this.destination = destination;
     }

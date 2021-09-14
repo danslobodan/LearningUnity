@@ -24,5 +24,15 @@ namespace Assets.Scripts
         {
             this.gridManager.TilePressed(tile.PosX, tile.PosY);
         }
+
+        public void Activate()
+        {
+            this.gameObject.GetComponent<Renderer>().material.color = Color.green;
+        }
+        
+        public void Deactivate()
+        {
+            this.gameObject.GetComponent<Renderer>().material.color = Color.white;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -23,10 +24,12 @@ namespace Assets.Scripts
             {
                 for (int j = 0; j < gridSize; j++)
                 {
-                    var newTile = new Tile();
-                    newTile.PosX = i;
-                    newTile.PosY = j;
-                    newTile.Blocked = Random.Range(0, 10) > 3;
+                    var newTile = new Tile
+                    {
+                        PosX = i,
+                        PosY = j,
+                        Blocked = Random.Range(0, 10) > 3
+                    };
                     grid[i, j] = newTile;
                 }
             }

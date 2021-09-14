@@ -12,6 +12,7 @@ namespace Assets.Scripts
         public Ball ball;
         private Grid grid;
         private TileView[,] gridView;
+        private TileView activeTile;
 
         const int GRID_SIZE = 4;
 
@@ -23,6 +24,8 @@ namespace Assets.Scripts
             grid = new Grid(GRID_SIZE);
             gridView = GenerateGridView(grid);
             ball.transform.position = new Vector3(0, 2.5f, 0);
+            activeTile = gridView[0,0];
+            activeTile.Activate();
         }
 
         // Update is called once per frame
@@ -33,8 +36,10 @@ namespace Assets.Scripts
 
         public void TilePressed(int i, int j)
         {
-            var tilePosition = gridView[i, j].transform.position;
-            ball.MoveBall(tilePosition);
+            activeTile.Deactivate();
+            activeTile = gridView[i, j];
+            ball.MoveBall(activeTile.transform.position);
+            activeTile.Activate();
         }
 
         public TileView[,] GenerateGridView(Grid grid)

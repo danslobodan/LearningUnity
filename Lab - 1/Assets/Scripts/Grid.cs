@@ -1,39 +1,85 @@
 ﻿using System.Collections;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class Grid
+    public class Grid : MonoBehaviour
     {
-        private readonly int gridSize;
-        private readonly Tile[,] tiles;
-        public int GridSize { get { return gridSize; } }
-        public Tile[,] Tiles { get { return tiles; } }
+        public Transform player;
+        public LayerMask unwalkableMask;
 
-        public Grid(int gridSize)
+        public Vector2 gridWorldSize;
+        public float nodeRadius;
+
+        Node[,] grid;
+
+        float nodeDiameter;
+        int gridSizeX, gridSizeY;
+
+        private void Start()
         {
-            this.gridSize = gridSize;
-            this.tiles = GenerateGrid(gridSize);
+            nodeDiameter = nodeRadius * 2;
+            gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
+            gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
+            CreateGrid();
         }
 
-        Tile[,] GenerateGrid(int gridSize)
+        private void CreateGrid()
         {
-            Tile[,] grid = new Tile[gridSize, gridSize];
-            for (int i = 0; i < gridSize; i++)
+            grid = new Node[gridSizeX, gridSizeY];
+            Vector3 worldBottomLeft =
+                transform.position
+                - Vector3.right * gridWorldSize.x / 2
+                - Vector3.forward * gridWorldSize.y / 2;
+
+            for (int x = 0; x < gridSizeX; x++)
             {
-                for (int j = 0; j < gridSize; j++)
+                for (int y = 0; y < gridSizeY; y++)
                 {
-                    var newTile = new Tile
-                    {
-                        PosX = i,
-                        PosY = j,
-                        Blocked = Random.Range(0, 10) > 3
-                    };
-                    grid[i, j] = newTile;
+                    Vector3 worldPoint =
+                        worldBottomLeft
+                        + Vector3.right * (x * nodeDiameter + nodeRadius)
+                        + Vector3.forward * (y * nodeDiameter + nodeRadius);
+                    bool walkable = !Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask);
+                    grid[x, y] = new Node(walkable, worldPoint);
                 }
             }
-            return grid;
+        }
+
+        public Node NodeFromWorldPoint(Vector3 worldPosition)
+        {
+            float percentX = (worldPosition.x + gridWorldSize.x / 2) / gridWorldSize.x;
+            float percentY = (worldPosition.z + gridWorldSize.y / 2) / gridWorldSize.y;
+
+            percentX = Mathf.Clamp01(percentX);
+            percentY = Mathf.Clamp01(percentY);
+
+            int x = Mathf.RoundToInt((gridSizeX - 1) * percentX);
+            int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);
+
+            return grid[x, y];
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
+
+            if (grid != null)
+            {
+                Node playerNode = NodeFromWorldPoint(player.position);
+
+                foreach (Node node in grid)
+                {
+                    Gizmos.color = node.walkable ? Color.white : Color.red;
+                    if (node == playerNode)
+                    {
+                        Gizmos.color = Color.blue;
+                    }
+                    Gizmos.DrawCube(node.worldPosition, new Vector3(1, 0.1f, 1) * (nodeDiameter - 0.1f));
+                }
+            }
         }
     }
+
 }

@@ -15,7 +15,6 @@ namespace Assets.Scripts
             {
                 gameObject.SetActive(false);
                 scoreboard.AddRations(1);
-                Debug.Log($"Picked up rations {this.GetHashCode()}");
             }
         }
     }

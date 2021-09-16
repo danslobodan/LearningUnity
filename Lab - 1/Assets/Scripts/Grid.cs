@@ -10,8 +10,12 @@ namespace Assets.Scripts
         public bool displayGizmos;
 
         public Player player;
-        public GameObject resource;
+        public GameObject rations;
+
         public Transform resources;
+        public List<GameObject> resourceList = new List<GameObject>();
+
+        public Scoreboard scoreboard;
 
         public LayerMask walkable;
         public LayerMask unwalkableMask;
@@ -30,7 +34,6 @@ namespace Assets.Scripts
             gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
             gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
             CreateGrid();
-            CreateResources();
         }
 
         public int MaxSize
@@ -64,26 +67,38 @@ namespace Assets.Scripts
             }
         }
 
-        private void CreateResources()
+        public void CreateResources(int count)
         {
-            var walkable = from Node node in grid
-                           where node.walkable
-                           select node;
-
-            var walkableCount = walkable.Count();
-
-            var nodeIndices = new List<int>();
-            var rand = new Random();
-            while (nodeIndices.Count < 4)
+            resourceList.ForEach(resource =>
             {
-                var tile = Random.Range(0, 1000) % walkableCount;
-                if (!nodeIndices.Contains(tile))
-                    nodeIndices.Add(tile);
-            }
+                Destroy(resource);
+            });
 
-            nodeIndices.Select(i => walkable.ElementAt(i).worldPosition)
-                .ToList()
-                .ForEach(vec => Instantiate(resource, vec, Quaternion.identity, resources));
+            if (grid != null)
+            {
+                var walkable = from Node node in grid
+                               where node.walkable
+                               select node;
+
+                var walkableCount = walkable.Count();
+
+                var nodeIndices = new List<int>();
+                var rand = new Random();
+                while (nodeIndices.Count < count)
+                {
+                    var tile = Random.Range(0, 1000) % walkableCount;
+                    if (!nodeIndices.Contains(tile))
+                        nodeIndices.Add(tile);
+                }
+
+                nodeIndices.Select(i => walkable.ElementAt(i).worldPosition)
+                    .ToList()
+                    .ForEach(vec => {
+                        var resource = Instantiate(rations, vec, Quaternion.identity, resources);
+                        resource.GetComponent<Resource>().scoreboard = scoreboard;
+                        resourceList.Add(resource);
+                    });
+            }
         }
 
         public List<Node> GetNeighbours(Node node)

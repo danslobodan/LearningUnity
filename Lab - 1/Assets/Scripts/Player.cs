@@ -15,20 +15,13 @@ namespace Assets.Scripts
 
         public Scoreboard scoreboard;
 
-        float currentDaylight;
         Vector3[] path;
         int targetIndex;
-
-        private void Awake()
-        {
-            currentDaylight = maxDaylight;
-            scoreboard.UpdateDaylight(maxDaylight);
-        }
 
         void Update()
         {
             if (path is null || path.Length == 0 || targetIndex >= path.Length
-                || currentDaylight <= 0)
+                || scoreboard.Daylight <= 0)
                 return;
 
             Vector3 currentWaypoint = new Vector3(path[targetIndex].x, transform.position.y, path[targetIndex].z); ;
@@ -43,13 +36,7 @@ namespace Assets.Scripts
             if (transform.position == currentWaypoint && targetIndex < path.Length)
                 targetIndex++;
 
-            currentDaylight -= speed * daylightSpeed * Time.deltaTime;
-            scoreboard.UpdateDaylight(currentDaylight);
-        }
-
-        public void ResetDaylight()
-        {
-            currentDaylight = maxDaylight;
+            scoreboard.SpendDaylight();
         }
 
         public void OnPathFound(Vector3[] path, bool success)

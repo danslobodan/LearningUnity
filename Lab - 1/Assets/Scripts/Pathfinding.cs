@@ -106,9 +106,10 @@ namespace Assets.Scripts
 
             Vector3[] waypoints = SimplifyPath(path).Reverse().ToArray();
 
-            return waypoints;
+            return allWaypoints;
         }
 
+        // TODO: Debug simplify path
         Vector3[] SimplifyPath(List<Node> path)
         {
             var waypoints = new List<Vector3>();

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -9,6 +10,10 @@ namespace Assets.Scripts
         public bool displayGizmos;
 
         public Player player;
+        public GameObject resource;
+        public Transform resources;
+
+        public LayerMask walkable;
         public LayerMask unwalkableMask;
 
         public Vector2 gridWorldSize;
@@ -25,6 +30,7 @@ namespace Assets.Scripts
             gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
             gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
             CreateGrid();
+            CreateResources();
         }
 
         public int MaxSize
@@ -56,6 +62,28 @@ namespace Assets.Scripts
                     grid[x, y] = new Node(walkable, worldPoint, x, y);
                 }
             }
+        }
+
+        private void CreateResources()
+        {
+            var walkable = from Node node in grid
+                           where node.walkable
+                           select node;
+
+            var walkableCount = walkable.Count();
+
+            var nodeIndices = new List<int>();
+            var rand = new Random();
+            while (nodeIndices.Count < 4)
+            {
+                var tile = Random.Range(0, 1000) % walkableCount;
+                if (!nodeIndices.Contains(tile))
+                    nodeIndices.Add(tile);
+            }
+
+            nodeIndices.Select(i => walkable.ElementAt(i).worldPosition)
+                .ToList()
+                .ForEach(vec => Instantiate(resource, vec, Quaternion.identity, resources));
         }
 
         public List<Node> GetNeighbours(Node node)
@@ -101,13 +129,11 @@ namespace Assets.Scripts
         {
             if (Input.GetMouseButtonUp(0))
             {
-                Plane plane = new Plane(Vector3.up, 0);
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (plane.Raycast(ray, out float distance))
+                if (Physics.Raycast(ray, out RaycastHit hit, 1000f, walkable))
                 {
-                    var worldPosition = ray.GetPoint(distance);
                     PathRequestManager.RequestPath(player.transform.position,
-                        worldPosition,
+                        hit.point,
                         player.OnPathFound);
                 }
             }

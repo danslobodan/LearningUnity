@@ -8,7 +8,7 @@ namespace Assets.Scripts
     {
         public bool displayGizmos;
 
-        public Transform player;
+        public Player player;
         public LayerMask unwalkableMask;
 
         public Vector2 gridWorldSize;
@@ -51,6 +51,7 @@ namespace Assets.Scripts
                         worldBottomLeft
                         + Vector3.right * (x * nodeDiameter + nodeRadius)
                         + Vector3.forward * (y * nodeDiameter + nodeRadius);
+                    
                     bool walkable = !Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask);
                     grid[x, y] = new Node(walkable, worldPoint, x, y);
                 }
@@ -96,13 +97,29 @@ namespace Assets.Scripts
             return grid[x, y];
         }
 
+        private void Update()
+        {
+            if (Input.GetMouseButtonUp(0))
+            {
+                Plane plane = new Plane(Vector3.up, 0);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (plane.Raycast(ray, out float distance))
+                {
+                    var worldPosition = ray.GetPoint(distance);
+                    PathRequestManager.RequestPath(player.transform.position,
+                        worldPosition,
+                        player.OnPathFound);
+                }
+            }
+        }
+
         private void OnDrawGizmos()
         {
             Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
 
             if (grid != null && displayGizmos)
             {
-                Node playerNode = NodeFromWorldPoint(player.position);
+                Node playerNode = NodeFromWorldPoint(player.transform.position);
 
                 foreach (Node node in grid)
                 {

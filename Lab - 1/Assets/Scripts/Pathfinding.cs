@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 namespace Assets.Scripts
 {
@@ -32,12 +33,16 @@ namespace Assets.Scripts
             {
                 Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
                 HashSet<Node> closedSet = new HashSet<Node>();
-
+                
                 openSet.Add(startNode);
 
-                while (openSet.Count > 0)
+                while (openSet.Count > 0 && openSet.Count < grid.MaxSize)
                 {
-                    Node currentNode = openSet.RemoveFirst();
+                    var itemsString = openSet.Items
+                        .Where(item => item != null)
+                        .Select(item => $"{item.Index} {item.Item.fCost} {item.Item.hCost}").ToList();
+
+                    Node currentNode = openSet.RemoveFirst();                    
                     closedSet.Add(currentNode);
 
                     if (currentNode == targetNode)
@@ -48,28 +53,33 @@ namespace Assets.Scripts
                         break;
                     }
 
-                    foreach (Node neighbour in grid.GetNeighbours(currentNode))
+                    var neighbours = grid
+                        .GetNeighbours(currentNode)
+                        .Where(node => node.walkable && !closedSet.Contains(node));
+
+                    foreach (Node neighbour in neighbours)
                     {
-                        if (!neighbour.walkable || closedSet.Contains(neighbour))
-                        {
-                            continue;
-                        }
+                        int newMovementCost = currentNode.gCost + HCost(currentNode, neighbour);
 
-                        int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
-
-                        if (newMovementCostToNeighbour < neighbour.gCost
+                        if (newMovementCost < neighbour.gCost
                             || !openSet.Contains(neighbour))
                         {
-                            neighbour.gCost = newMovementCostToNeighbour;
-                            neighbour.hCost = GetDistance(neighbour, targetNode);
+                            neighbour.gCost = newMovementCost;
+                            neighbour.hCost = HCost(neighbour, targetNode);
                             neighbour.parent = currentNode;
 
                             if (!openSet.Contains(neighbour))
                             {
+                                if (openSet.Count == grid.MaxSize)
+                                {
+                                    Debug.Log($"Overflow {openSet.Count}");
+                                }
                                 openSet.Add(neighbour);
                             }
-                            else
+                            else 
+                            {
                                 openSet.UpdateItem(neighbour);
+                            }
                         }
                     }
                 }
@@ -93,6 +103,7 @@ namespace Assets.Scripts
         {
             var path = new List<Node>();
             Node currentNode = endNode;
+            path.Add(currentNode);
 
             while(currentNode != startNode)
             {
@@ -131,7 +142,7 @@ namespace Assets.Scripts
             return waypoints.ToArray();
         }
 
-        int GetDistance(Node nodeA, Node nodeB)
+        int HCost(Node nodeA, Node nodeB)
         {
             int distanceX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
             int distanceY = Mathf.Abs(nodeA.gridY - nodeB.gridY);

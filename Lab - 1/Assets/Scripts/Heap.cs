@@ -3,92 +3,83 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class Heap<T> where T : IHeapItem<T>
+    public class Heap<T> where T : IComparable<T>
     {
-        T[] items;
+        HeapItem<T>[] items;
         int currentItemCount;
+        public int Count => currentItemCount;
+        public HeapItem<T>[] Items => items;
 
         public Heap(int maxHeapSize)
         {
-            items = new T[maxHeapSize];
+            items = new HeapItem<T>[maxHeapSize];
         }
 
         public void Add(T item)
         {
-            item.HeapIndex = currentItemCount;
-            items[currentItemCount] = item;
-            SortUp(item);
+            var heapItem = new HeapItem<T>(item, currentItemCount);
+            items[currentItemCount] = heapItem;
+            SortUp(heapItem);
             currentItemCount++;
         }
 
         public T RemoveFirst()
         {
-            T firstItem = items[0];
+            HeapItem<T> firstItem = items[0];
             currentItemCount--;
 
             items[0] = items[currentItemCount];
-            items[0].HeapIndex = 0;
+            items[0].Index = 0;
             
             SortDown(items[0]);
-            return firstItem;
+            return firstItem.Item;
         }
 
         public void UpdateItem(T item)
         {
-            SortUp(item);
+            var heapItem = items.Single(hItem => ReferenceEquals(hItem.Item, item));
+            SortUp(heapItem);
         }
 
-        public int Count => currentItemCount;
 
         public bool Contains(T item)
         {
-            return Equals(items[item.HeapIndex], item);
+            return items.Any(heapItem => ReferenceEquals(heapItem, item));
         }
 
-        void SortDown(T item)
+        void SortDown(HeapItem<T> heapItem)
         {
             while (true)
             {
-                int childIndexLeft = item.HeapIndex * 2 + 1;
-                int childIndexRight = item.HeapIndex * 2 + 2;
+                int childIndexLeft = heapItem.Index * 2 + 1;
+                int childIndexRight = heapItem.Index * 2 + 2;
 
-                if (childIndexLeft < currentItemCount)
-                {
-                    int swapIndex = childIndexLeft;
-                    if (childIndexRight < currentItemCount)
-                    {
-                        if (items[childIndexLeft].CompareTo(items[childIndexRight]) < 0)
-                        {
-                            swapIndex = childIndexRight;
-                        }
-                    }
-
-                    if (item.CompareTo(items[swapIndex]) < 0)
-                    {
-                        Swap(item, items[swapIndex]);
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                else
-                {
+                if (childIndexLeft >= currentItemCount && childIndexRight >= currentItemCount)
                     return;
-                }
+
+                int swapIndex = childIndexRight < currentItemCount
+                    && items[childIndexLeft].CompareTo(items[childIndexRight]) < 0
+                        ? childIndexRight
+                        : childIndexLeft;
+
+                if (heapItem.CompareTo(items[swapIndex]) < 0)
+                    Swap(heapItem, items[swapIndex]);
+                else
+                    return;
             }
         }
 
-        private void SortUp(T item)
+        private void SortUp(HeapItem<T> item)
         {
-            int parentIndex = (item.HeapIndex - 1) / 2;
-
             while (true)
             {
-                T parentItem = items[parentIndex];
+                int parentIndex = (item.Index - 1) / 2;
+                HeapItem<T> parentItem = items[parentIndex];
+
                 if (item.CompareTo(parentItem) > 0)
                 {
                     Swap(item, parentItem);
@@ -100,13 +91,13 @@ namespace Assets.Scripts
             }
         }
 
-        void Swap(T itemA, T itemB)
+        void Swap(HeapItem<T> itemA, HeapItem<T> itemB)
         {
-            items[itemA.HeapIndex] = itemB;
-            items[itemB.HeapIndex] = itemA;
-            int itemAIndex = itemA.HeapIndex;
-            itemA.HeapIndex = itemB.HeapIndex;
-            itemB.HeapIndex = itemAIndex;
+            items[itemA.Index] = itemB;
+            items[itemB.Index] = itemA;
+            int itemAIndex = itemA.Index;
+            itemA.Index = itemB.Index;
+            itemB.Index = itemAIndex;
         }
     }
 }

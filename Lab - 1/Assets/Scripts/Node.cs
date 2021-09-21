@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class Node : IHeapItem<Node>
+    public class Node : IComparable<Node>
     {
         public bool walkable;
         public Vector3 worldPosition;
@@ -16,8 +17,6 @@ namespace Assets.Scripts
         public int hCost;
 
         public Node parent;
-
-        int heapIndex;
 
         public Node(bool walkable, Vector3 worldPosition, int gridX, int gridY)
         {
@@ -35,8 +34,6 @@ namespace Assets.Scripts
             }
         }
 
-        public int HeapIndex { get => heapIndex; set => heapIndex = value; }
-
         public int CompareTo(Node other)
         {
             int compare = fCost.CompareTo(other.fCost);
@@ -46,6 +43,11 @@ namespace Assets.Scripts
             }
 
             return -compare;
+        }
+
+        public override string ToString()
+        {
+            return $"{gCost} {hCost} {fCost}";
         }
     }
 

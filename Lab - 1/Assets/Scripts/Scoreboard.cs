@@ -43,9 +43,22 @@ namespace Assets.Scripts
             rationsText.text = $"Rations: {this.rations}";
             if (this.rations % rationsToCreate == 0)
             {
-                grid.CreateResources(rationsToCreate);
-                daylight = maxDaylight;
+                Reset();
             }
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Reset();
+            }
+        }
+
+        private void Reset()
+        {
+            grid.CreateResources(rationsToCreate);
+            daylight = maxDaylight;
         }
     }
 

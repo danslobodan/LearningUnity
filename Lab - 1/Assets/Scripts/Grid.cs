@@ -28,20 +28,20 @@ namespace Assets.Scripts
         float nodeDiameter;
         int gridSizeX, gridSizeY;
 
+        public int Size
+        {
+            get
+            {
+                return (int)(gridWorldSize.x * gridWorldSize.y);
+            }
+        }
+
         private void Awake()
         {
             nodeDiameter = nodeRadius * 2;
             gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
             gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
             CreateGrid();
-        }
-
-        public int MaxSize
-        {
-            get
-            {
-                return gridSizeX * gridSizeY;
-            }
         }
 
         private void CreateGrid()
@@ -137,9 +137,13 @@ namespace Assets.Scripts
         private int GridPositionFromCoordinate(float position, float worldSize, int gridSize)
         {
             float percent = (position + worldSize / 2) / worldSize;
-            float normalized = Mathf.Clamp01(percent);
-            int gridPosition = Mathf.RoundToInt((gridSize - 1) * normalized);
-            return gridPosition;
+            float clamped = Mathf.Clamp01(percent);
+            int gridPosition = Mathf.FloorToInt(gridSize * clamped);
+
+            if (gridPosition > gridSize - 1)
+                return gridSize - 1;
+
+            return gridPosition; 
         }
 
 

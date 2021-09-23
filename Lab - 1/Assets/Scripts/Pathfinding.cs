@@ -12,43 +12,43 @@ namespace Assets.Scripts
         PathRequestManager requestManager;
         Grid grid;
 
+        // Heap<Node> oSet;
+        Heap<Node> oSet;
+        
+        ICollection<Node> cSet;
+        Node tNode;
+
         private void Awake()
         {
             requestManager = GetComponent<PathRequestManager>();
             grid = GetComponent<Grid>();
         }
 
-        IEnumerator FindPath(Vector3 startPos, Vector3 targetPos)
+        IEnumerator FindPath(Node startNode, Node targetNode)
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            Vector3[] waypoints = new Vector3[0];
             bool pathSuccess = false;
-
-            Node startNode = grid.NodeFromWorldPoint(startPos);
-            Node targetNode = grid.NodeFromWorldPoint(targetPos);
 
             if (startNode.walkable && targetNode.walkable)
             {
-                Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                Heap<Node> openSet = new Heap<Node>(grid.Size);
+                // MyHeap<Node> openSet = new MyHeap<Node>();
+
                 HashSet<Node> closedSet = new HashSet<Node>();
-                
+
                 openSet.Add(startNode);
 
-                while (openSet.Count > 0 && openSet.Count < grid.MaxSize)
+                while (openSet.Count > 0)
                 {
-                    var itemsString = openSet.Items
-                        .Where(item => item != null)
-                        .Select(item => $"{item.Index} {item.Item.fCost} {item.Item.hCost}").ToList();
-
-                    Node currentNode = openSet.RemoveFirst();                    
+                    Node currentNode = openSet.RemoveFirst();
                     closedSet.Add(currentNode);
 
                     if (currentNode == targetNode)
                     {
                         sw.Stop();
-                        print($"Path found {sw.ElapsedMilliseconds} ms");
+                        // Debug.Log($"Path found {sw.ElapsedMilliseconds} ms");
                         pathSuccess = true;
                         break;
                     }
@@ -61,31 +61,27 @@ namespace Assets.Scripts
                     {
                         int newMovementCost = currentNode.gCost + HCost(currentNode, neighbour);
 
-                        if (newMovementCost < neighbour.gCost
-                            || !openSet.Contains(neighbour))
+                        if (!openSet.Contains(neighbour))
                         {
                             neighbour.gCost = newMovementCost;
-                            neighbour.hCost = HCost(neighbour, targetNode);
+                            neighbour.hCost = HCost(neighbour, tNode);
                             neighbour.parent = currentNode;
-
-                            if (!openSet.Contains(neighbour))
-                            {
-                                if (openSet.Count == grid.MaxSize)
-                                {
-                                    Debug.Log($"Overflow {openSet.Count}");
-                                }
-                                openSet.Add(neighbour);
-                            }
-                            else 
-                            {
-                                openSet.UpdateItem(neighbour);
-                            }
+                            openSet.Add(neighbour);
+                        }
+                        else if (newMovementCost < neighbour.gCost)
+                        {
+                            neighbour.gCost = newMovementCost;
+                            neighbour.hCost = HCost(neighbour, tNode);
+                            neighbour.parent = currentNode;
+                            openSet.UpdateItem(neighbour);
                         }
                     }
                 }
             }
 
             yield return null;
+
+            Vector3[] waypoints = new Vector3[0];
             if (pathSuccess)
             {
                 waypoints = RetracePath(startNode, targetNode);
@@ -96,14 +92,16 @@ namespace Assets.Scripts
 
         public void StartFindPath(Vector3 pathStart, Vector3 pathEnd)
         {
-            StartCoroutine(FindPath(pathStart, pathEnd));
+            Node startNode = grid.NodeFromWorldPoint(pathStart);
+            Node targetNode = grid.NodeFromWorldPoint(pathEnd);
+
+            StartCoroutine(FindPath(startNode, targetNode));
         }
 
         Vector3[] RetracePath(Node startNode, Node endNode)
         {
             var path = new List<Node>();
             Node currentNode = endNode;
-            path.Add(currentNode);
 
             while(currentNode != startNode)
             {
@@ -136,8 +134,8 @@ namespace Assets.Scripts
                 if (directionNew != directionOld)
                 {
                     waypoints.Add(path[i].worldPosition);
+                    directionOld = directionNew;
                 }
-                directionOld = directionNew;
             }
             return waypoints.ToArray();
         }
@@ -156,6 +154,37 @@ namespace Assets.Scripts
         int HCost(int longer, int shorter)
         {
             return 14 * shorter + 10 * (longer - shorter);
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (oSet != null)
+            {
+                oSet.Items.ToList().ForEach(node =>
+                {
+                    if (node.Index == 0)
+                    {
+                        Gizmos.color = Color.magenta;
+                        Gizmos.DrawCube(Vec(node.Item.worldPosition, -0.1f), Vector3.one);
+                    }
+                    else
+                    {
+                        Gizmos.color = Color.cyan;
+                        Gizmos.DrawCube(Vec(node.Item.worldPosition, 0), Vector3.one);
+                    }
+
+                });
+                cSet.ToList().ForEach(node =>
+                {
+                    Gizmos.color = Color.black;
+                    Gizmos.DrawCube(Vec(node.worldPosition, 0.1f), Vector3.one);
+                });
+            }
+        }
+
+        Vector3 Vec(Vector3 vec, float offset)
+        {
+            return new Vector3(vec.x + offset, 0, vec.z + offset);
         }
     }
 

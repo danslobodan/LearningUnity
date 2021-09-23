@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,11 +18,13 @@ namespace Assets.Scripts
         public Heap(int maxHeapSize)
         {
             items = new HeapItem<T>[maxHeapSize];
+            currentItemCount = 0;
         }
 
         public void Add(T item)
         {
             var heapItem = new HeapItem<T>(item, currentItemCount);
+
             items[currentItemCount] = heapItem;
             SortUp(heapItem);
             currentItemCount++;
@@ -30,28 +33,31 @@ namespace Assets.Scripts
         public T RemoveFirst()
         {
             HeapItem<T> firstItem = items[0];
-            currentItemCount--;
+            HeapItem<T> lastItem = items[currentItemCount - 1];
 
-            items[0] = items[currentItemCount];
-            items[0].Index = 0;
+            lastItem.Index = 0;
+            items[0] = lastItem;
+
+            items[currentItemCount - 1] = null;
+
+            currentItemCount--;
             
-            SortDown(items[0]);
+            SortDown(lastItem);
             return firstItem.Item;
         }
 
         public void UpdateItem(T item)
         {
-            var heapItem = items.Single(hItem => ReferenceEquals(hItem.Item, item));
+            var heapItem = items.Where(hItem => hItem != null).Last(hItem => hItem.Item.Equals(item));
             SortUp(heapItem);
         }
 
-
         public bool Contains(T item)
         {
-            return items.Any(heapItem => ReferenceEquals(heapItem, item));
+            return items.Where(hItem => hItem != null).Any(hItem => hItem.Item.Equals(item));
         }
 
-        void SortDown(HeapItem<T> heapItem)
+        private void SortDown(HeapItem<T> heapItem)
         {
             while (true)
             {
@@ -69,7 +75,9 @@ namespace Assets.Scripts
                 if (heapItem.CompareTo(items[swapIndex]) < 0)
                     Swap(heapItem, items[swapIndex]);
                 else
+                {
                     return;
+                }
             }
         }
 
@@ -91,7 +99,7 @@ namespace Assets.Scripts
             }
         }
 
-        void Swap(HeapItem<T> itemA, HeapItem<T> itemB)
+        private void Swap(HeapItem<T> itemA, HeapItem<T> itemB)
         {
             items[itemA.Index] = itemB;
             items[itemB.Index] = itemA;

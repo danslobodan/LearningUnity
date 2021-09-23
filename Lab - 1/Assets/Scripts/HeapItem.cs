@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class HeapItem<T>: IComparable<HeapItem<T>> where T : IComparable<T>
+    public class HeapItem<T> where T : IComparable<T>
     {
         public HeapItem(T item, int index)
         {

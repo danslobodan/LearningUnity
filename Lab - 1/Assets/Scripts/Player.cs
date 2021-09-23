@@ -20,7 +20,7 @@ namespace Assets.Scripts
 
         void Update()
         {
-            if (path is null || path.Length == 0 || targetIndex >= path.Length
+            if (path == null || path.Length == 0 || targetIndex >= path.Length
                 || scoreboard.Daylight <= 0)
                 return;
 

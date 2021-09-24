@@ -47,7 +47,7 @@ namespace Assets.Scripts
 
         public override string ToString()
         {
-            return $"{fCost}"; // $"{gridX} {gridY}";
+            return $"{gridX} {gridY}"; // $"{fCost}"; 
         }
     }
 

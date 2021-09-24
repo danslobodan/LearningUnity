@@ -12,12 +12,6 @@ namespace Assets.Scripts
         PathRequestManager requestManager;
         Grid grid;
 
-        // Heap<Node> oSet;
-        Heap<Node> oSet;
-        
-        ICollection<Node> cSet;
-        Node tNode;
-
         private void Awake()
         {
             requestManager = GetComponent<PathRequestManager>();
@@ -34,7 +28,6 @@ namespace Assets.Scripts
                 sw.Start();
 
                 Heap<Node> openSet = new Heap<Node>(grid.Size);
-                // MyHeap<Node> openSet = new MyHeap<Node>();
 
                 HashSet<Node> closedSet = new HashSet<Node>();
 
@@ -60,21 +53,19 @@ namespace Assets.Scripts
                     foreach (Node neighbour in neighbours)
                     {
                         int newMovementCost = currentNode.gCost + HCost(currentNode, neighbour);
+                        bool inOpenSet = openSet.Contains(neighbour);
 
-                        if (!openSet.Contains(neighbour))
+                        if (!inOpenSet || newMovementCost < neighbour.gCost)
                         {
                             neighbour.gCost = newMovementCost;
-                            neighbour.hCost = HCost(neighbour, tNode);
+                            neighbour.hCost = HCost(neighbour, targetNode);
                             neighbour.parent = currentNode;
+                        }
+
+                        if (!inOpenSet)
                             openSet.Add(neighbour);
-                        }
                         else if (newMovementCost < neighbour.gCost)
-                        {
-                            neighbour.gCost = newMovementCost;
-                            neighbour.hCost = HCost(neighbour, tNode);
-                            neighbour.parent = currentNode;
                             openSet.UpdateItem(neighbour);
-                        }
                     }
                 }
             }
@@ -115,7 +106,7 @@ namespace Assets.Scripts
 
             Vector3[] waypoints = SimplifyPath(path).Reverse().ToArray();
 
-            return allWaypoints;
+            return waypoints;
         }
 
         // TODO: Debug simplify path
@@ -154,32 +145,6 @@ namespace Assets.Scripts
         int HCost(int longer, int shorter)
         {
             return 14 * shorter + 10 * (longer - shorter);
-        }
-
-        private void OnDrawGizmos()
-        {
-            if (oSet != null)
-            {
-                oSet.Items.ToList().ForEach(node =>
-                {
-                    if (node.Index == 0)
-                    {
-                        Gizmos.color = Color.magenta;
-                        Gizmos.DrawCube(Vec(node.Item.worldPosition, -0.1f), Vector3.one);
-                    }
-                    else
-                    {
-                        Gizmos.color = Color.cyan;
-                        Gizmos.DrawCube(Vec(node.Item.worldPosition, 0), Vector3.one);
-                    }
-
-                });
-                cSet.ToList().ForEach(node =>
-                {
-                    Gizmos.color = Color.black;
-                    Gizmos.DrawCube(Vec(node.worldPosition, 0.1f), Vector3.one);
-                });
-            }
         }
 
         Vector3 Vec(Vector3 vec, float offset)

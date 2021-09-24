@@ -94,41 +94,41 @@ namespace Assets.Scripts
             var path = new List<Node>();
             Node currentNode = endNode;
 
-            while(currentNode != startNode)
+            while (currentNode != startNode)
             {
                 path.Add(currentNode);
                 currentNode = currentNode.parent;
             }
 
-            Vector3[] allWaypoints = path.Select(node => node.worldPosition)
+            IEnumerable<Node> simplePath = SimplifyPath(path);
+
+            Vector3[] waypoints = simplePath
+                .Select(node => node.worldPosition)
                 .Reverse()
                 .ToArray();
-
-            Vector3[] waypoints = SimplifyPath(path).Reverse().ToArray();
 
             return waypoints;
         }
 
-        // TODO: Debug simplify path
-        Vector3[] SimplifyPath(List<Node> path)
+        IEnumerable<Node> SimplifyPath(List<Node> path)
         {
-            var waypoints = new List<Vector3>();
+            var baseWaypoints = new List<Node>();
             Vector2 directionOld = Vector2.zero;
 
-            for (int i = 1; i < path.Count; i++)
+            for (int i = 0; i < path.Count - 1; i++)
             {
                 Vector2 directionNew = 
                     new Vector2(
-                        path[i-1].gridX - path[i].gridX, 
-                        path[i-1].gridY - path[i].gridY);
+                        path[i + 1].gridX - path[i].gridX,
+                        path[i + 1].gridY - path[i].gridY);
 
                 if (directionNew != directionOld)
                 {
-                    waypoints.Add(path[i].worldPosition);
+                    baseWaypoints.Add(path[i]);
                     directionOld = directionNew;
                 }
             }
-            return waypoints.ToArray();
+            return baseWaypoints;
         }
 
         int HCost(Node nodeA, Node nodeB)
@@ -145,11 +145,6 @@ namespace Assets.Scripts
         int HCost(int longer, int shorter)
         {
             return 14 * shorter + 10 * (longer - shorter);
-        }
-
-        Vector3 Vec(Vector3 vec, float offset)
-        {
-            return new Vector3(vec.x + offset, 0, vec.z + offset);
         }
     }
 

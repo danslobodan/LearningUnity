@@ -14,8 +14,8 @@ namespace Assets.Scripts
 
         public void Add(T item)
         {
-            index[index.Count] = item;
             items[item] = items.Count;
+            index[index.Count] = item;
             SortUp(item);
         }
 
@@ -58,13 +58,9 @@ namespace Assets.Scripts
                 T parentItem = index[parentIndex];
 
                 if (item.CompareTo(parentItem) > 0)
-                {
                     Swap(item, parentItem);
-                }
                 else
-                {
                     break;
-                }
             }
         }
 

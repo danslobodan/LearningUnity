@@ -24,8 +24,8 @@ namespace Assets.Scripts
 
             if (startNode.walkable && targetNode.walkable)
             {
-                Heap<Node> openSet = new Heap<Node>(grid.Size);
-                HashSet<Node> closedSet = new HashSet<Node>();
+                var openSet = new MyHeap<Node>(); // new Heap<Node>(grid.Size);
+                var closedSet = new HashSet<Node>();
 
                 openSet.Add(startNode);
 

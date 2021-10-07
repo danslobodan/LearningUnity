@@ -13,134 +13,138 @@ namespace Tests
         [Test]
         public void Contains_Returns_False_When_Heap_Is_Empty()
         {
-            var Heap = GetHeap<int>();
-            Assert.False(Heap.Contains(20));
+            var heap = GetHeap<int>();
+            Assert.False(heap.Contains(20));
         }
 
         [Test]
         public void Contains_Returns_True_When_Element_Is_Present()
         {
-            var Heap = GetHeap<int>();
-            Heap.Add(10);
-            Assert.True(Heap.Contains(10));
+            var heap = GetHeap<int>();
+            heap.Add(10);
+            Assert.True(heap.Contains(10));
         }
 
         [Test]
         public void Contains_Returns_False_When_Element_Is_Not_Present()
         {
-            var Heap = GetHeap<int>();
-            Heap.Add(10);
-            Heap.Add(30);
-            Assert.False(Heap.Contains(20));
+            var heap = GetHeap<int>();
+            heap.Add(10);
+            heap.Add(30);
+            Assert.False(heap.Contains(20));
         }
 
         [Test]
         public void Add_Adds_Element_To_Heap()
         {
-            var Heap = GetHeap<int>();
-            Heap.Add(20);
-            Assert.AreEqual(1, Heap.Count);
-            Assert.True(Heap.Contains(20));
+            var heap = GetHeap<int>();
+            heap.Add(20);
+            Assert.AreEqual(1, heap.Count);
+            Assert.True(heap.Contains(20));
         }
 
         [Test]
         public void Add_Adds_Three_Elements_To_Heap()
         {
-            var Heap = GetHeap<int>();
-            Heap.Add(10);
-            Heap.Add(20);
-            Heap.Add(30);
-            Assert.AreEqual(3, Heap.Count);
-            Assert.True(Heap.Contains(10));
-            Assert.True(Heap.Contains(20));
-            Assert.True(Heap.Contains(30));
+            var heap = GetHeap<int>();
+            heap.Add(10);
+            heap.Add(20);
+            heap.Add(30);
+            Assert.AreEqual(3, heap.Count);
+            Assert.True(heap.Contains(10));
+            Assert.True(heap.Contains(20));
+            Assert.True(heap.Contains(30));
+        }
+
+        [Test]
+        public void RemoveFirst_Throws_When_Heap_Is_Empty()
+        {
+            var heap = GetHeap<int>();
+            Assert.Throws<InvalidOperationException>(() => heap.RemoveFirst());
         }
 
         [Test]
         public void RemoveFirst_Returns_First_Element()
         {
-            var Heap = GetHeap<int>();
-            Heap.Add(10);
-            var element = Heap.RemoveFirst();
+            var heap = GetHeap<int>();
+            heap.Add(10);
+            var element = heap.RemoveFirst();
             Assert.AreEqual(10, element);
         }
 
         [Test]
         public void RemoveFirst_Removes_First_Element()
         {
-            var Heap = GetHeap<int>();
-            Heap.Add(10);
-            Heap.RemoveFirst();
-            Assert.False(Heap.Contains(10));
+            var heap = GetHeap<int>();
+            heap.Add(10);
+            heap.RemoveFirst();
+            Assert.False(heap.Contains(10));
         }
 
         [Test]
         public void RemoveFirst_Returns_20_When_Added_10_And_Then_Added_20()
         {
-            var Heap = GetHeap<int>();
-            Heap.Add(10);
-            Heap.Add(20);
-            var item = Heap.RemoveFirst();
+            var heap = GetHeap<int>();
+            heap.Add(10);
+            heap.Add(20);
+            var item = heap.RemoveFirst();
             Assert.AreEqual(20, item);
         }
 
         [Test]
         public void RemoveFirst_Returns_20_When_Added_20_And_Then_Added_10()
         {
-            var Heap = GetHeap<int>();
-            Heap.Add(20);
-            Heap.Add(10);
-            var item = Heap.RemoveFirst();
+            var heap = GetHeap<int>();
+            heap.Add(20);
+            heap.Add(10);
+            var item = heap.RemoveFirst();
             Assert.AreEqual(20, item);
         }
 
         [Test]
         public void RemoveFirst_Returns_Correct_Element_When_Called_The_Second_Time_After_Add()
         {
-            var Heap = GetHeap<int>();
-            Heap.Add(10);
-            Heap.Add(20);
-            Heap.Add(30);
-            Heap.Add(40);
-            Heap.RemoveFirst();
-            var item = Heap.RemoveFirst();
+            var heap = GetHeap<int>();
+            heap.Add(10);
+            heap.Add(20);
+            heap.Add(30);
+            heap.Add(40);
+            heap.RemoveFirst();
+            var item = heap.RemoveFirst();
             Assert.AreEqual(30, item);
         }
 
+
+        [Test]
         public void RemoveFirst_Returns_Correct_Element_When_Heap_Contains_Objects()
         {
-            var Heap = GetHeap<TestItem>();
-            Heap.Add(new TestItem(5));
-            Heap.Add(new TestItem(15));
-
-            var expected = new TestItem(25);
-            Heap.Add(expected);
-            var actual = Heap.RemoveFirst();
+            var heap = GetHeap<AscendingInt>();
+            var expected = new AscendingInt(5);
+            heap.Add(expected);
+            heap.Add(new AscendingInt(15));
+            heap.Add(new AscendingInt(25));
+            
+            var actual = heap.RemoveFirst();
             Assert.AreEqual(expected, actual);
         }
 
-        private class TestItem : IComparable<TestItem>, IEquatable<TestItem>
+        private class AscendingInt : IComparable<AscendingInt>
         {
             private int value;
 
-            public TestItem(int value)
+            public AscendingInt(int value)
             {
                 this.value = value;
             }
 
-            public int CompareTo(TestItem other)
+            public int CompareTo(AscendingInt other)
             {
                 if (value < other.value)
-                    return -1;
-                else if (value > other.value)
                     return 1;
+                else if (value > other.value)
+                    return -1;
                 else
                     return 0;
-            }
-
-            public bool Equals(TestItem other)
-            {
-                return value.Equals(other.value);
             }
         }
 

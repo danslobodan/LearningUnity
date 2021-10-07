@@ -118,26 +118,28 @@ namespace Tests
         [Test]
         public void RemoveFirst_Returns_Correct_Element_When_Heap_Contains_Objects()
         {
-            var heap = GetHeap<AscendingInt>();
-            var expected = new AscendingInt(5);
+            var heap = GetHeap<ReverseComparisonInt>();
+            var expected = new ReverseComparisonInt(5);
             heap.Add(expected);
-            heap.Add(new AscendingInt(15));
-            heap.Add(new AscendingInt(25));
-            
+            heap.Add(new ReverseComparisonInt(15));
+            heap.Add(new ReverseComparisonInt(25));
+
             var actual = heap.RemoveFirst();
             Assert.AreEqual(expected, actual);
         }
 
-        private class AscendingInt : IComparable<AscendingInt>
+        private class ReverseComparisonInt : IComparable<ReverseComparisonInt>
         {
             private int value;
 
-            public AscendingInt(int value)
+            public ReverseComparisonInt(int value)
             {
                 this.value = value;
             }
 
-            public int CompareTo(AscendingInt other)
+            public int HeapIndex { get; set; }
+
+            public int CompareTo(ReverseComparisonInt other)
             {
                 if (value < other.value)
                     return 1;
@@ -150,8 +152,7 @@ namespace Tests
 
         private IHeap<T> GetHeap<T>() where T : IComparable<T>
         {
-            // return new Heap<T>(100);
-            return new MyHeap<T>();
+            return new Heap<T>();
         }
     }
 }

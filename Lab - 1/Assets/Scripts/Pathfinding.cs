@@ -22,9 +22,13 @@ namespace Assets.Scripts
         {
             bool pathSuccess = false;
 
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             if (startNode.walkable && targetNode.walkable)
             {
-                var openSet = new MyHeap<Node>(); // new Heap<Node>(grid.Size);
+                var openSet = new Heap<Node>(); 
+                // var openSet = new Heap<Node>(grid.Size);
                 var closedSet = new HashSet<Node>();
 
                 openSet.Add(startNode);
@@ -36,7 +40,8 @@ namespace Assets.Scripts
 
                     if (currentNode == targetNode)
                     {
-                        Debug.Log("Path found");
+                        sw.Stop();
+                        Debug.Log($"Path found in {sw.ElapsedMilliseconds} miliseconds");
                         pathSuccess = true;
                         break;
                     }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,45 +6,45 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class Heap<T> where T : IComparable<T>
+    public class Heap<T> : IHeap<T> where T : IComparable<T>
     {
         HeapItem<T>[] items;
-        int currentItemCount;
-        public int Count => currentItemCount;
+        int count;
+        public int Count => count;
         public HeapItem<T>[] Items => items;
 
         public Heap(int maxHeapSize)
         {
             items = new HeapItem<T>[maxHeapSize];
-            currentItemCount = 0;
+            count = 0;
         }
 
         public void Add(T item)
         {
-            var heapItem = new HeapItem<T>(item, currentItemCount);
+            var heapItem = new HeapItem<T>(item, count);
 
-            items[currentItemCount] = heapItem;
+            items[count] = heapItem;
             SortUp(heapItem);
-            currentItemCount++;
+            count++;
         }
 
         public T RemoveFirst()
         {
             HeapItem<T> firstItem = items[0];
-            HeapItem<T> lastItem = items[currentItemCount - 1];
+            HeapItem<T> lastItem = items[count - 1];
 
             lastItem.Index = 0;
             items[0] = lastItem;
 
-            items[currentItemCount - 1] = null;
+            items[count - 1] = null;
 
-            currentItemCount--;
+            count--;
             
             SortDown(lastItem);
             return firstItem.Item;
         }
 
-        public void UpdateItem(T item)
+        public void Update(T item)
         {
             var heapItem = items.Where(hItem => hItem != null).Last(hItem => hItem.Item.Equals(item));
             SortUp(heapItem);
@@ -64,10 +62,10 @@ namespace Assets.Scripts
                 int childIndexLeft = heapItem.Index * 2 + 1;
                 int childIndexRight = heapItem.Index * 2 + 2;
 
-                if (childIndexLeft >= currentItemCount && childIndexRight >= currentItemCount)
+                if (childIndexLeft >= count && childIndexRight >= count)
                     return;
 
-                int swapIndex = childIndexRight < currentItemCount
+                int swapIndex = childIndexRight < count
                     && items[childIndexLeft].CompareTo(items[childIndexRight]) < 0
                         ? childIndexRight
                         : childIndexLeft;

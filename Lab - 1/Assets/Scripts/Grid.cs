@@ -147,17 +147,25 @@ namespace Assets.Scripts
         }
 
 
+        private Node raycastNode;
+
         private void Update()
         {
             if (Input.GetMouseButtonUp(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit, 1000f, walkable))
+
+                if (Physics.Raycast(ray, out RaycastHit hit, 3000f, walkable))
                 {
+                    raycastNode = NodeFromWorldPoint(hit.point);
+                    Debug.Log($"Hit {hit.point}");
+                    Debug.Log($"Node {raycastNode}");
                     PathRequestManager.RequestPath(player.transform.position,
                         hit.point,
                         player.OnPathFound);
                 }
+                else
+                    Debug.Log("No nit");
             }
         }
 
@@ -175,6 +183,11 @@ namespace Assets.Scripts
                     if (node == playerNode)
                     {
                         Gizmos.color = Color.blue;
+                    }
+
+                    if (this.raycastNode != null && this.raycastNode == node)
+                    {
+                        Gizmos.color = Color.cyan;
                     }
 
                     Gizmos.DrawCube(node.worldPosition, new Vector3(1, 0.1f, 1) * (nodeDiameter - 0.1f));

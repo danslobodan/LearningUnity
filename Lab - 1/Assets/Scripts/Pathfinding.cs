@@ -24,11 +24,7 @@ namespace Assets.Scripts
 
             if (startNode.walkable && targetNode.walkable)
             {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-
                 Heap<Node> openSet = new Heap<Node>(grid.Size);
-
                 HashSet<Node> closedSet = new HashSet<Node>();
 
                 openSet.Add(startNode);
@@ -40,8 +36,7 @@ namespace Assets.Scripts
 
                     if (currentNode == targetNode)
                     {
-                        sw.Stop();
-                        // Debug.Log($"Path found {sw.ElapsedMilliseconds} ms");
+                        Debug.Log("Path found");
                         pathSuccess = true;
                         break;
                     }
@@ -65,7 +60,7 @@ namespace Assets.Scripts
                         if (!inOpenSet)
                             openSet.Add(neighbour);
                         else if (newMovementCost < neighbour.gCost)
-                            openSet.UpdateItem(neighbour);
+                            openSet.Update(neighbour);
                     }
                 }
             }
@@ -101,6 +96,8 @@ namespace Assets.Scripts
             }
 
             IEnumerable<Node> simplePath = SimplifyPath(path);
+            Debug.Log($"Path {string.Join(" , ", path)}");
+            Debug.Log($"Simple {string.Join(" , ", simplePath)}");
 
             Vector3[] waypoints = simplePath
                 .Select(node => node.worldPosition)

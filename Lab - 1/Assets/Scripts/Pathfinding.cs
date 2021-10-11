@@ -23,7 +23,7 @@ namespace Assets.Scripts
             bool pathSuccess = false;
 
             Stopwatch sw = new Stopwatch();
-            sw.Start();
+            // sw.Start();
 
             if (startNode.walkable && targetNode.walkable)
             {
@@ -39,8 +39,8 @@ namespace Assets.Scripts
 
                     if (currentNode == targetNode)
                     {
-                        sw.Stop();
-                        Debug.Log($"Path found in {sw.ElapsedMilliseconds} miliseconds");
+                        // sw.Stop();
+                        // Debug.Log($"Path found in {sw.ElapsedMilliseconds} miliseconds");
                         pathSuccess = true;
                         break;
                     }

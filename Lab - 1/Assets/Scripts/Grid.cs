@@ -158,14 +158,14 @@ namespace Assets.Scripts
                 if (Physics.Raycast(ray, out RaycastHit hit, 3000f, walkable))
                 {
                     raycastNode = NodeFromWorldPoint(hit.point);
-                    Debug.Log($"Hit {hit.point}");
-                    Debug.Log($"Node {raycastNode}");
+                    // Debug.Log($"Hit {hit.point}");
+                    // Debug.Log($"Node {raycastNode}");
                     PathRequestManager.RequestPath(player.transform.position,
                         hit.point,
                         player.OnPathFound);
                 }
-                else
-                    Debug.Log("No nit");
+                //else
+                //    Debug.Log("No nit");
             }
         }
 

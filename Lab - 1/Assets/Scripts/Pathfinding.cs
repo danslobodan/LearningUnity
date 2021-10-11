@@ -100,8 +100,9 @@ namespace Assets.Scripts
             }
 
             IEnumerable<Node> simplePath = SimplifyPath(path);
-            Debug.Log($"Path {string.Join(" , ", path)}");
-            Debug.Log($"Simple {string.Join(" , ", simplePath)}");
+            //Debug.Log($"Start {startNode} End {endNode}");
+            // Debug.Log($"Path {string.Join(" , ", path)}");
+            // Debug.Log($"Simple path {string.Join(" , ", simplePath)}");
 
             Vector3[] waypoints = simplePath
                 .Select(node => node.worldPosition)
@@ -113,9 +114,12 @@ namespace Assets.Scripts
 
         IEnumerable<Node> SimplifyPath(List<Node> path)
         {
+            if (path.Count < 2)
+                return path;
+
             var baseWaypoints = new List<Node>();
             Vector2 directionOld = Vector2.zero;
-
+            
             for (int i = 0; i < path.Count - 1; i++)
             {
                 Vector2 directionNew = 
@@ -129,6 +133,7 @@ namespace Assets.Scripts
                     directionOld = directionNew;
                 }
             }
+
             return baseWaypoints;
         }
 

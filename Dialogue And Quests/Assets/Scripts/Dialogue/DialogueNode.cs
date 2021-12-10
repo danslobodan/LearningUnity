@@ -1,17 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPG.Dialogue
 {
-    [Serializable]
-    public class DialogueNode
+    public class DialogueNode : ScriptableObject
     {
-        public string uniqueID = Guid.NewGuid().ToString();
         public string text;
         [SerializeField] List<string> children = new List<string>();
-
 
         public ICollection<string> Children => children;
 

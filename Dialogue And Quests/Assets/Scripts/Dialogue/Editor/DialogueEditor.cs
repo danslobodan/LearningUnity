@@ -94,12 +94,16 @@ namespace RPG.Dialogue.Editor
 			{
                 draggingNode = GetNodeAtPoint(RelativeMousePosition);
                 if (draggingNode != null)
+				{
                     draggingOffset = GetOffset(draggingNode.rect.position);
+                    Selection.activeObject = draggingNode;
+				}
                 else
 				{
                     draggingCanvas = true;
                     draggingCanvasOffset = RelativeMousePosition;
-				}
+                    Selection.activeObject = selectedDialogue;
+                }
             }
             else if (Event.current.type == EventType.MouseDrag && draggingNode != null)
             {
@@ -172,12 +176,12 @@ namespace RPG.Dialogue.Editor
                      linkingNode = null;
                 }
             }
-            else if (linkingNode.Children.Contains(node.uniqueID))
+            else if (linkingNode.Children.Contains(node.name))
 			{
                 if (GUILayout.Button("unlink"))
                 {
                     Undo.RecordObject(selectedDialogue, "Removed Dialogue Link");
-                    linkingNode.Children.Remove(node.uniqueID);
+                    linkingNode.Children.Remove(node.name);
                     linkingNode = null;
                 }
             }
@@ -185,7 +189,7 @@ namespace RPG.Dialogue.Editor
                 if (GUILayout.Button("child"))
                 {
                     Undo.RecordObject(selectedDialogue, "Added Dialogue Link");
-                    linkingNode.Children.Add(node.uniqueID);
+                    linkingNode.Children.Add(node.name);
                     linkingNode = null;
                 }
 			}

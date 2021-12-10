@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace RPG.Dialogue
@@ -13,18 +14,13 @@ namespace RPG.Dialogue
 
 		public IEnumerable<DialogueNode> Nodes => nodes;
 
-		public DialogueNode RootNode => nodes.First();
-
 		Dictionary<string, DialogueNode> nodeLookup = new Dictionary<string, DialogueNode>();
 
 #if UNITY_EDITOR
 		private void Awake()
 		{
 			if (nodes.Count == 0)
-			{
-				var root = new DialogueNode();
-				Add(root);
-			}
+				CreateNode();
 		}
 #endif
 
@@ -34,17 +30,24 @@ namespace RPG.Dialogue
 		}
 
 		public IEnumerable<DialogueNode> GetChildren(DialogueNode parentNode)
-		{
-			return parentNode.Children
+			=> parentNode.Children
 				.Where(id => nodeLookup.ContainsKey(id))
 				.Select(id => nodeLookup[id]);
+
+		public DialogueNode CreateNode()
+		{
+			var newNode = CreateInstance<DialogueNode>();
+			newNode.name = Guid.NewGuid().ToString();
+			Undo.RegisterCreatedObjectUndo(newNode, "Created Dialogue Node.");
+			nodes.Add(newNode);
+			UpdateLookup();
+			return newNode;
 		}
 
 		public void CreateNode(DialogueNode parentNode)
 		{
-			var newNode = new DialogueNode();
-			parentNode.Children.Add(newNode.uniqueID);
-			Add(newNode);
+			var newNode = CreateNode();
+			parentNode.Children.Add(newNode.name);
 		}
 
 		public void DeleteNode(DialogueNode node)
@@ -52,27 +55,15 @@ namespace RPG.Dialogue
 			RemoveFromChildren(node);
 			nodes.Remove(node);
 			UpdateLookup();
+			Undo.DestroyObjectImmediate(node);
 		}
 
 		private void RemoveFromChildren(DialogueNode node) 
-		{
-			nodes.ForEach(parent =>
-			{
-				parent.Children.Remove(node.uniqueID);
-			});
-		}
-
-		private void Add(DialogueNode node)
-		{
-			nodes.Add(node);
-			UpdateLookup();
-		}
+			=> nodes.ForEach(parent => parent.Children.Remove(node.name));
 
 		private void UpdateLookup()
-		{
-			nodeLookup = nodes
-				.GroupBy(node => node.uniqueID)
-				.ToDictionary(node => node.First().uniqueID, node => node.First());
-		}
+			=> nodeLookup = nodes
+				.GroupBy(node => node.name)
+				.ToDictionary(node => node.First().name, node => node.First());
 	}
 }

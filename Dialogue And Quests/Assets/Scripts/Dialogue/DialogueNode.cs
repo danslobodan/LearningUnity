@@ -12,6 +12,8 @@ namespace RPG.Dialogue
         public string text;
         public string[] children;
 
+        public IEnumerable<string> Children => children;
+
         public Rect rect = new Rect(0, 0, 200, 200);
     }
 }

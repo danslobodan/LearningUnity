@@ -1,18 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
-public class DialogueEditor : MonoBehaviour
+namespace RPG.Dialogue.Editor
 {
-    // Start is called before the first frame update
-    void Start()
+    public class DialogueEditor : EditorWindow
     {
-        
-    }
+        [MenuItem("Window/Dialogue Editor")]
+        public static void ShowEditorWindow()
+        {
+            GetWindow<DialogueEditor>("Dialogue Editor");
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        [OnOpenAsset(1)]
+        public static bool OnOpenAsset(int instanceID, int line)
+        {
+            var dialogue = EditorUtility.InstanceIDToObject(instanceID) as Dialogue;
+            if (dialogue != null)
+                return false;
+
+            ShowEditorWindow();
+
+            return true;
+        }
     }
 }

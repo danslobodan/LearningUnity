@@ -10,9 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c7806522a30f174b89c09d548346148, type: 3}
-  m_Name: New Dialogue
+  m_Name: New Dialogue 2
   m_EditorClassIdentifier: 
-  nodes:
-  - uniqueID: 
-    text: 
-    children: []
+  nodes: []

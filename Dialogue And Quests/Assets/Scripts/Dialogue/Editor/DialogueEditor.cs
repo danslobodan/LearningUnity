@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -8,6 +7,8 @@ namespace RPG.Dialogue.Editor
 {
     public class DialogueEditor : EditorWindow
     {
+        Dialogue selectedDialogue = null;
+
         [MenuItem("Window/Dialogue Editor")]
         public static void ShowEditorWindow()
         {
@@ -26,8 +27,32 @@ namespace RPG.Dialogue.Editor
             return true;
         }
 
+		private void OnSelectionChange()
+		{
+            UpdateSelected();
+		}
+
+        private void UpdateSelected()
+        {
+            var dialogue = Selection.activeObject as Dialogue;
+            if (dialogue == null)
+                return;
+
+            selectedDialogue = dialogue;
+            Repaint();
+        }
+
         private void OnGUI() {
-            Debug.Log("OnGui");
+            if (selectedDialogue == null)
+            {
+                EditorGUILayout.LabelField("No Dialogue Selected");
+                return;
+            }
+
+            selectedDialogue.Nodes.ToList().ForEach(node =>
+            {
+                EditorGUILayout.LabelField(node.text);
+            });
         }
     }
 }

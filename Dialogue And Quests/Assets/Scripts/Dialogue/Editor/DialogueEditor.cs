@@ -18,7 +18,7 @@ namespace RPG.Dialogue.Editor
         public static bool OnOpenAsset(int instanceID, int line)
         {
             var dialogue = EditorUtility.InstanceIDToObject(instanceID) as Dialogue;
-            if (dialogue != null)
+            if (dialogue == null)
                 return false;
 
             ShowEditorWindow();

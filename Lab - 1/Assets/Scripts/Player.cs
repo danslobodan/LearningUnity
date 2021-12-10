@@ -86,7 +86,7 @@ namespace Assets.Scripts
                 speed * Time.deltaTime);
         }
 
-        public void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
             if (path != null)
             {

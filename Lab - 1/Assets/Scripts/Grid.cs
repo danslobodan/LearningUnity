@@ -151,6 +151,11 @@ namespace Assets.Scripts
 
         private void Update()
         {
+            GetPlayerInput();
+        }
+
+        private void GetPlayerInput()
+        {
             if (Input.GetMouseButtonUp(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

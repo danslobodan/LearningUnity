@@ -399,8 +399,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 200
-  maxDaylight: 100
-  daylightSpeed: 0.3
   scoreboard: {fileID: 384455762}
 --- !u!136 &487570339
 CapsuleCollider:

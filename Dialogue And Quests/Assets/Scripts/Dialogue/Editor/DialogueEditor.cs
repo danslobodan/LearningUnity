@@ -9,6 +9,7 @@ namespace RPG.Dialogue.Editor
     {
         Dialogue selectedDialogue = null;
         GUIStyle nodeStyle;
+        DialogueNode draggingNode = null;
 
 		private void OnEnable()
 		{
@@ -58,15 +59,47 @@ namespace RPG.Dialogue.Editor
                 return;
             }
 
+            ProcessEvents();
 			selectedDialogue.Nodes.ToList().ForEach(node =>
 			{
 				OnGUINode(node);
 			});
         }
 
+        private void ProcessEvents()
+		{
+            if (Event.current.type == EventType.MouseDown && draggingNode == null)
+                draggingNode = GetNodeAtPoint(Event.current.mousePosition);
+            else if (Event.current.type == EventType.MouseDrag && draggingNode != null)
+            {
+                UpdateNodePosition();
+            }
+            else if (Event.current.type == EventType.MouseUp && draggingNode != null)
+                draggingNode = null;
+		}
+
+        private DialogueNode GetNodeAtPoint(Vector2 mousePosition)
+		{
+            var selectedNodes = selectedDialogue.Nodes
+                .Where(node => node.rect.Contains(mousePosition));
+
+            if (!selectedNodes.Any())
+                return null;
+
+            return selectedNodes.First();
+		}
+
+        private void UpdateNodePosition()
+		{
+            Undo.RecordObject(selectedDialogue, "Move Dialogue");
+            var mousePosition = Event.current.mousePosition;
+            draggingNode.rect.position = mousePosition;
+            GUI.changed = true;
+		}
+
 		private void OnGUINode(DialogueNode node)
 		{
-            GUILayout.BeginArea(node.position, nodeStyle);
+            GUILayout.BeginArea(node.rect, nodeStyle);
 			EditorGUI.BeginChangeCheck();
 
 			EditorGUILayout.LabelField("Node: ");

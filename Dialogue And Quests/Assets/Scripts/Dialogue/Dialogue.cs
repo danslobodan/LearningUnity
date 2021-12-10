@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +21,16 @@ namespace RPG.Dialogue
 		private void Awake()
 		{
 			if (nodes.Count == 0)
-				nodes.Add(new DialogueNode());
+			{
+				var root = new DialogueNode();
+				Add(root);
+			}
 		}
 #endif
 
 		private void OnValidate()
 		{
-			nodeLookup = nodes
-				.GroupBy(node => node.uniqueID)
-				.ToDictionary(node => node.First().uniqueID, node => node.First());
+			UpdateLookup();
 		}
 
 		public IEnumerable<DialogueNode> GetChildren(DialogueNode parentNode)
@@ -36,6 +38,41 @@ namespace RPG.Dialogue
 			return parentNode.Children
 				.Where(id => nodeLookup.ContainsKey(id))
 				.Select(id => nodeLookup[id]);
+		}
+
+		public void CreateNode(DialogueNode parentNode)
+		{
+			var newNode = new DialogueNode();
+			parentNode.Children.Add(newNode.uniqueID);
+			Add(newNode);
+		}
+
+		public void DeleteNode(DialogueNode node)
+		{
+			RemoveFromChildren(node);
+			nodes.Remove(node);
+			UpdateLookup();
+		}
+
+		private void RemoveFromChildren(DialogueNode node) 
+		{
+			nodes.ForEach(parent =>
+			{
+				parent.Children.Remove(node.uniqueID);
+			});
+		}
+
+		private void Add(DialogueNode node)
+		{
+			nodes.Add(node);
+			UpdateLookup();
+		}
+
+		private void UpdateLookup()
+		{
+			nodeLookup = nodes
+				.GroupBy(node => node.uniqueID)
+				.ToDictionary(node => node.First().uniqueID, node => node.First());
 		}
 	}
 }

@@ -11,6 +11,7 @@ namespace RPG.Dialogue.Editor
         GUIStyle nodeStyle;
         DialogueNode draggingNode = null;
         Vector2 draggingOffset;
+        DialogueNode linkingNode = null;
 
 		private void OnEnable()
 		{
@@ -111,16 +112,62 @@ namespace RPG.Dialogue.Editor
             GUILayout.BeginArea(node.rect, nodeStyle);
 			EditorGUI.BeginChangeCheck();
 
-			EditorGUILayout.LabelField("Node: ");
-			var uniqueID = EditorGUILayout.TextField(node.uniqueID);
 			var text = EditorGUILayout.TextField(node.text);
 
 			if (EditorGUI.EndChangeCheck())
 			{
-				Undo.RecordObject(selectedDialogue, "Update Dialogue Text.");
+				Undo.RecordObject(selectedDialogue, "Updated Dialogue Text");
 				node.text = text;
-				node.uniqueID = uniqueID;
 			}
+
+            GUILayout.BeginHorizontal();
+
+            if(GUILayout.Button("-"))
+			{
+                Undo.RecordObject(selectedDialogue, "Removed Dialogue Node");
+                selectedDialogue.DeleteNode(node);
+			}
+
+
+            if (linkingNode == null)
+            {
+                if (GUILayout.Button("link"))
+                {
+                    linkingNode = node;
+                }
+            }
+            else if (linkingNode == node)
+            {
+                if (GUILayout.Button("cancel"))
+                {
+                     linkingNode = null;
+                }
+            }
+            else if (linkingNode.Children.Contains(node.uniqueID))
+			{
+                if (GUILayout.Button("unlink"))
+                {
+                    Undo.RecordObject(selectedDialogue, "Removed Dialogue Link");
+                    linkingNode.Children.Remove(node.uniqueID);
+                    linkingNode = null;
+                }
+            }
+            else { 
+                if (GUILayout.Button("child"))
+                {
+                    Undo.RecordObject(selectedDialogue, "Added Dialogue Link");
+                    linkingNode.Children.Add(node.uniqueID);
+                    linkingNode = null;
+                }
+			}
+
+            if (GUILayout.Button("+"))
+			{
+                Undo.RecordObject(selectedDialogue, "Added Dialogue Node");
+                selectedDialogue.CreateNode(node);
+			}
+
+            GUILayout.EndHorizontal();
 
             GUILayout.EndArea();
 		}

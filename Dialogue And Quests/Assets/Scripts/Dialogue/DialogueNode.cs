@@ -8,12 +8,13 @@ namespace RPG.Dialogue
     [Serializable]
     public class DialogueNode
     {
-        public string uniqueID;
+        public string uniqueID = Guid.NewGuid().ToString();
         public string text;
-        public string[] children;
+        [SerializeField] List<string> children = new List<string>();
 
-        public IEnumerable<string> Children => children;
 
-        public Rect rect = new Rect(0, 0, 200, 200);
+        public ICollection<string> Children => children;
+
+        public Rect rect = new Rect(0, 0, 200, 100);
     }
 }

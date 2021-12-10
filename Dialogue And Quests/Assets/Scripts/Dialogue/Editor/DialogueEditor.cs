@@ -25,7 +25,27 @@ namespace RPG.Dialogue.Editor
             UpdateSelected();
         }
 
-        [MenuItem("Window/Dialogue Editor")]
+        private void OnGUI()
+        {
+            if (selectedDialogue == null)
+            {
+                EditorGUILayout.LabelField("No Dialogue Selected");
+                return;
+            }
+
+            ProcessEvents();
+
+            selectedDialogue.Nodes.ToList().ForEach(node =>
+            {
+                DrawConnections(node);
+            });
+            selectedDialogue.Nodes.ToList().ForEach(node =>
+            {
+                DrawNode(node);
+            });
+        }
+
+		[MenuItem("Window/Dialogue Editor")]
         public static void ShowEditorWindow()
         {
             GetWindow<DialogueEditor>("Dialogue Editor");
@@ -51,20 +71,6 @@ namespace RPG.Dialogue.Editor
 
             selectedDialogue = dialogue;
             Repaint();
-        }
-
-        private void OnGUI() {
-            if (selectedDialogue == null)
-            {
-                EditorGUILayout.LabelField("No Dialogue Selected");
-                return;
-            }
-
-            ProcessEvents();
-			selectedDialogue.Nodes.ToList().ForEach(node =>
-			{
-				OnGUINode(node);
-			});
         }
 
         private void ProcessEvents()
@@ -100,7 +106,7 @@ namespace RPG.Dialogue.Editor
             GUI.changed = true;
 		}
 
-		private void OnGUINode(DialogueNode node)
+		private void DrawNode(DialogueNode node)
 		{
             GUILayout.BeginArea(node.rect, nodeStyle);
 			EditorGUI.BeginChangeCheck();
@@ -116,15 +122,28 @@ namespace RPG.Dialogue.Editor
 				node.uniqueID = uniqueID;
 			}
 
-            selectedDialogue.GetChildren(node)
-                .ToList()
-                .ForEach(childNode =>
-                {
-                    EditorGUILayout.LabelField(childNode.uniqueID);
-                });
-
             GUILayout.EndArea();
 		}
 
-	}
+        private void DrawConnections(DialogueNode node)
+        {
+            selectedDialogue.GetChildren(node)
+                .ToList()
+                .ForEach(child =>
+                {
+                    Vector2 startPosition = new Vector2(node.rect.center.x, node.rect.yMax);
+                    Vector2 endPosition = new Vector2(child.rect.center.x, child.rect.yMin);
+                    Vector2 controlPointOffset = endPosition - startPosition;
+                    controlPointOffset.x = 0;
+                    controlPointOffset.y *= 0.8f;
+                    Handles.DrawBezier(
+                        startPosition, endPosition, 
+                        startPosition + controlPointOffset, 
+                        endPosition - controlPointOffset, 
+                        Color.white, null, 4f);
+
+                });
+        }
+
+    }
 }

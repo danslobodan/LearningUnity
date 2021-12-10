@@ -51,12 +51,17 @@ namespace RPG.Dialogue.Editor
 
             selectedDialogue.Nodes.ToList().ForEach(node =>
             {
-                
-                var newText = EditorGUILayout.TextField(node.text);
-                if (newText != node.text)
+                EditorGUI.BeginChangeCheck();
+
+                EditorGUILayout.LabelField("Node: ");
+                var uniqueID = EditorGUILayout.TextField(node.uniqueID);
+                var text = EditorGUILayout.TextField(node.text);
+
+                if (EditorGUI.EndChangeCheck())
 				{
-                    node.text = newText;
-                    EditorUtility.SetDirty(selectedDialogue);
+                    Undo.RecordObject(selectedDialogue, "Update Dialogue Text.");
+                    node.text = text;
+                    node.uniqueID = uniqueID;
 				}
             });
         }

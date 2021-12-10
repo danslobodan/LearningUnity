@@ -25,5 +25,9 @@ namespace RPG.Dialogue.Editor
 
             return true;
         }
+
+        private void OnGUI() {
+            Debug.Log("OnGui");
+        }
     }
 }

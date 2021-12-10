@@ -10,6 +10,7 @@ namespace RPG.Dialogue.Editor
         Dialogue selectedDialogue = null;
         GUIStyle nodeStyle;
         DialogueNode draggingNode = null;
+        Vector2 draggingOffset;
 
 		private void OnEnable()
 		{
@@ -69,31 +70,28 @@ namespace RPG.Dialogue.Editor
         private void ProcessEvents()
 		{
             if (Event.current.type == EventType.MouseDown && draggingNode == null)
+			{
                 draggingNode = GetNodeAtPoint(Event.current.mousePosition);
+                draggingOffset = draggingNode.rect.position - Event.current.mousePosition;
+            }
             else if (Event.current.type == EventType.MouseDrag && draggingNode != null)
             {
-                UpdateNodePosition();
+                OnDragNode();
             }
             else if (Event.current.type == EventType.MouseUp && draggingNode != null)
                 draggingNode = null;
 		}
 
         private DialogueNode GetNodeAtPoint(Vector2 mousePosition)
-		{
-            var selectedNodes = selectedDialogue.Nodes
-                .Where(node => node.rect.Contains(mousePosition));
+            => selectedDialogue.Nodes
+                .LastOrDefault(node => 
+                    node.rect.Contains(mousePosition));
 
-            if (!selectedNodes.Any())
-                return null;
-
-            return selectedNodes.First();
-		}
-
-        private void UpdateNodePosition()
+        private void OnDragNode()
 		{
             Undo.RecordObject(selectedDialogue, "Move Dialogue");
             var mousePosition = Event.current.mousePosition;
-            draggingNode.rect.position = mousePosition;
+            draggingNode.rect.position = mousePosition + draggingOffset;
             GUI.changed = true;
 		}
 

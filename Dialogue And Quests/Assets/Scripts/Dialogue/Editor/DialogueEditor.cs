@@ -16,6 +16,9 @@ namespace RPG.Dialogue.Editor
         bool draggingCanvas = false;
         Vector2 draggingCanvasOffset;
 
+        const float canvasSize = 4000f;
+        const float backgroundSize = 50f;
+
 		private void OnEnable()
 		{
             nodeStyle = new GUIStyle();
@@ -40,7 +43,10 @@ namespace RPG.Dialogue.Editor
             ProcessEvents();
 
             scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
-            GUILayoutUtility.GetRect(4000, 4000);
+            var canvas = GUILayoutUtility.GetRect(canvasSize, canvasSize);
+            var texture = Resources.Load("background") as Texture2D;
+            var texCoords = new Rect(0, 0, canvasSize / backgroundSize, canvasSize / backgroundSize);
+            GUI.DrawTextureWithTexCoords(canvas, texture, texCoords);
 
             selectedDialogue.Nodes.ToList().ForEach(node =>
             {

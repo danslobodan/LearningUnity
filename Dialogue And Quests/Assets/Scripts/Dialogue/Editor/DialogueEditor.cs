@@ -161,7 +161,6 @@ namespace RPG.Dialogue.Editor
                 selectedDialogue.DeleteNode(node);
 			}
 
-
             if (linkingNode == null)
             {
                 if (GUILayout.Button("link"))

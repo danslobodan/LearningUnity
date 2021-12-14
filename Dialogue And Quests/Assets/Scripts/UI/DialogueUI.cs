@@ -3,6 +3,7 @@ using RPG.Dialogue;
 using TMPro;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 
 namespace RPG.UI
 {
@@ -11,6 +12,7 @@ namespace RPG.UI
 		PlayerConversant playerConversant;
 		[SerializeField] TextMeshProUGUI AIText;
 		[SerializeField] Button nextButton;
+		[SerializeField] GameObject AIResponse;
 		[SerializeField] Transform choiceRoot;
 		[SerializeField] GameObject choicePrefab;
 
@@ -32,8 +34,23 @@ namespace RPG.UI
 
 		private void UpdateUI()
 		{
+			AIResponse.SetActive(!playerConversant.IsChoosing);
+			choiceRoot.gameObject.SetActive(playerConversant.IsChoosing);
+
+			if (playerConversant.IsChoosing)
+				UpdateChoices();
+			else
+				UpdateAIText();
+		}
+
+		private void UpdateAIText()
+		{
 			AIText.text = playerConversant.GetText();
 			nextButton.gameObject.SetActive(playerConversant.HasNext());
+		}
+
+		private void UpdateChoices()
+		{
 			foreach (Transform item in choiceRoot)
 			{
 				Destroy(item.gameObject);
@@ -43,8 +60,14 @@ namespace RPG.UI
 				.ToList()
 				.ForEach(choice =>
 				{
-					var choiceUI = Instantiate(choicePrefab, choiceRoot);
-					choiceUI.GetComponentInChildren<TextMeshProUGUI>().text = choice;
+					var choiceInstance = Instantiate(choicePrefab, choiceRoot);
+					choiceInstance.GetComponentInChildren<TextMeshProUGUI>().text = choice.Text;
+					var button = choiceInstance.GetComponentInChildren<Button>();
+					button.onClick.AddListener(() => 
+					{
+						playerConversant.SelectChoice(choice);
+						UpdateUI();
+					});
 				});
 		}
 	}

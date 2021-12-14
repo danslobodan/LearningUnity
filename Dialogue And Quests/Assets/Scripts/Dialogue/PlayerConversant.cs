@@ -9,11 +9,14 @@ namespace RPG.Dialogue
     {
         [SerializeField] Dialogue currentDialogue;
         DialogueNode currentNode;
+        bool isChoosing = false;
 
 		private void Awake()
 		{
             currentNode = currentDialogue.RootNode;
 		}
+
+        public bool IsChoosing => isChoosing;
 
 		public string GetText() {
 
@@ -23,10 +26,16 @@ namespace RPG.Dialogue
             return currentNode.Text;
         }
 
-        public IEnumerable<string> GetChoices()
+        public IEnumerable<DialogueNode> GetChoices()
+            => currentDialogue
+                .GetChildren(currentNode)
+                .Where(child => child.IsPlayerSpeaking);
+
+        public void SelectChoice(DialogueNode chosenNode)
 		{
-            yield return "I've lived here all my life.";
-            yield return "I come from Newtown.";
+            currentNode = chosenNode;
+            isChoosing = false;
+            Next();
 		}
 
         public void Next()
@@ -35,13 +44,17 @@ namespace RPG.Dialogue
             if (!children.Any())
                 return;
 
+            if (children.Any(child => child.IsPlayerSpeaking))
+			{
+                isChoosing = true;
+                return;
+			}
+
             var randomChild = Random.Range(0, children.Count());
             currentNode = children.ElementAt(randomChild);
 		}
 
         public bool HasNext()
-		{
-            return currentDialogue.GetChildren(currentNode).Any();
-		}
+            => currentDialogue.GetChildren(currentNode).Any();
     }
 }

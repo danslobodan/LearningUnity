@@ -37,10 +37,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPlayerSpeaking: 0
   text: Wanna play?
-  children: []
+  children:
+  - ac6b980c-522a-4e48-a4ca-de7f96031260
+  - f05d0390-8119-41e2-afc7-063122e2569f
   rect:
     serializedVersion: 2
-    x: 359
+    x: 360
     y: 292
     width: 200
     height: 100
@@ -64,6 +66,50 @@ MonoBehaviour:
     serializedVersion: 2
     x: 335
     y: 144
+    width: 200
+    height: 100
+--- !u!114 &-4047109071544902707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dfecb090d0b7ab40b1e4eab9303119b, type: 3}
+  m_Name: f05d0390-8119-41e2-afc7-063122e2569f
+  m_EditorClassIdentifier: 
+  isPlayerSpeaking: 1
+  text: No
+  children:
+  - 50ca2c88-5016-45da-beb5-27d3a01a19d7
+  rect:
+    serializedVersion: 2
+    x: 603
+    y: 492
+    width: 200
+    height: 100
+--- !u!114 &-3009398203580641572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dfecb090d0b7ab40b1e4eab9303119b, type: 3}
+  m_Name: ac6b980c-522a-4e48-a4ca-de7f96031260
+  m_EditorClassIdentifier: 
+  isPlayerSpeaking: 1
+  text: Yes
+  children:
+  - 1061a435-24e8-4dd4-b094-f7f27241ed97
+  rect:
+    serializedVersion: 2
+    x: 360
+    y: 492
     width: 200
     height: 100
 --- !u!114 &-258512589830522253
@@ -106,6 +152,9 @@ MonoBehaviour:
   - {fileID: -5595286163232696656}
   - {fileID: 2461581102725166435}
   - {fileID: -258512589830522253}
+  - {fileID: -3009398203580641572}
+  - {fileID: -4047109071544902707}
+  - {fileID: 8865881339094461050}
   offset: {x: 0, y: 200}
 --- !u!114 &2461581102725166435
 MonoBehaviour:
@@ -149,5 +198,26 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
+    width: 200
+    height: 100
+--- !u!114 &8865881339094461050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dfecb090d0b7ab40b1e4eab9303119b, type: 3}
+  m_Name: 50ca2c88-5016-45da-beb5-27d3a01a19d7
+  m_EditorClassIdentifier: 
+  isPlayerSpeaking: 0
+  text: Too bad
+  children: []
+  rect:
+    serializedVersion: 2
+    x: 603
+    y: 692
     width: 200
     height: 100

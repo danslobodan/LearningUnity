@@ -3,7 +3,6 @@ using RPG.Dialogue;
 using TMPro;
 using UnityEngine.UI;
 using System.Linq;
-using System;
 
 namespace RPG.UI
 {
@@ -22,6 +21,8 @@ namespace RPG.UI
 				.FindGameObjectWithTag("Player")
 				.GetComponent<PlayerConversant>();
 
+			playerConversant.onConversationUpdated += UpdateUI;
+
 			UpdateUI();
 			nextButton.onClick.AddListener(Next);
 		}
@@ -29,11 +30,15 @@ namespace RPG.UI
 		private void Next()
 		{
 			playerConversant.Next();
-			UpdateUI();
 		}
 
 		private void UpdateUI()
 		{
+			gameObject.SetActive(playerConversant.IsActive);
+
+			if (!playerConversant.IsActive)
+				return;
+
 			AIResponse.SetActive(!playerConversant.IsChoosing);
 			choiceRoot.gameObject.SetActive(playerConversant.IsChoosing);
 
@@ -63,11 +68,7 @@ namespace RPG.UI
 					var choiceInstance = Instantiate(choicePrefab, choiceRoot);
 					choiceInstance.GetComponentInChildren<TextMeshProUGUI>().text = choice.Text;
 					var button = choiceInstance.GetComponentInChildren<Button>();
-					button.onClick.AddListener(() => 
-					{
-						playerConversant.SelectChoice(choice);
-						UpdateUI();
-					});
+					button.onClick.AddListener(() => playerConversant.SelectChoice(choice));
 				});
 		}
 	}

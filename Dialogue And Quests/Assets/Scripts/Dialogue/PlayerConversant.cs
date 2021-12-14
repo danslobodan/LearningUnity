@@ -8,7 +8,6 @@ namespace RPG.Dialogue
 {
     public class PlayerConversant : MonoBehaviour
     {
-        [SerializeField] Dialogue testDialogue;
         Dialogue currentDialogue;
         DialogueNode currentNode;
         bool isChoosing = false;
@@ -32,12 +31,6 @@ namespace RPG.Dialogue
             currentDialogue = dialogue;
             currentNode = dialogue.RootNode;
             onConversationUpdated();
-		}
-
-        IEnumerator Start()
-		{
-            yield return new WaitForSeconds(2);
-            StartDialogue(testDialogue);
 		}
 
         public IEnumerable<DialogueNode> GetChoices()
@@ -72,5 +65,13 @@ namespace RPG.Dialogue
 
         public bool HasNext()
             => currentDialogue.GetChildren(currentNode).Any();
+
+        public void Quit()
+		{
+            currentDialogue = null;
+            currentNode = null;
+            isChoosing = false;
+            onConversationUpdated();
+		}
     }
 }

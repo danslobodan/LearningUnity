@@ -155,6 +155,7 @@ MonoBehaviour:
   - {fileID: -3009398203580641572}
   - {fileID: -4047109071544902707}
   - {fileID: 8865881339094461050}
+  - {fileID: 7108318086305527079}
   offset: {x: 0, y: 200}
 --- !u!114 &2461581102725166435
 MonoBehaviour:
@@ -170,7 +171,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPlayerSpeaking: 0
   text: What's your name?
-  children: []
+  children:
+  - b80111f7-d306-405d-9721-10dd1cf00ce2
   rect:
     serializedVersion: 2
     x: 51
@@ -198,6 +200,28 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
+    width: 200
+    height: 100
+--- !u!114 &7108318086305527079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dfecb090d0b7ab40b1e4eab9303119b, type: 3}
+  m_Name: b80111f7-d306-405d-9721-10dd1cf00ce2
+  m_EditorClassIdentifier: 
+  isPlayerSpeaking: 1
+  text: Player.
+  children:
+  - 3cdecda3-9bbb-412c-a3e3-4bc9ba2fd317
+  rect:
+    serializedVersion: 2
+    x: 50
+    y: 452
     width: 200
     height: 100
 --- !u!114 &8865881339094461050

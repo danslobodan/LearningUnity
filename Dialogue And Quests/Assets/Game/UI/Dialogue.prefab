@@ -422,6 +422,7 @@ GameObject:
   - component: {fileID: 4013438605496424442}
   - component: {fileID: 7029485220273834685}
   - component: {fileID: 6870294817832775461}
+  - component: {fileID: 873012223375100486}
   m_Layer: 5
   m_Name: Dialogue
   m_TagString: Untagged
@@ -530,6 +531,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &873012223375100486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3214729160257532967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaefde2a438388444af48aaf934a2977, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AIText: {fileID: 857421033945267162}
+  nextButton: {fileID: 7123343243403141838}
 --- !u!1 &5521609617342927383
 GameObject:
   m_ObjectHideFlags: 0

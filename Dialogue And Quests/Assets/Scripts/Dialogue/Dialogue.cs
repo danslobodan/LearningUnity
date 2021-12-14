@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -14,6 +13,7 @@ namespace RPG.Dialogue
 		[SerializeField] Vector2 offset = new Vector2(0, 200);
 
 		public IEnumerable<DialogueNode> Nodes => nodes;
+		public DialogueNode RootNode => nodes.First();
 
 		Dictionary<string, DialogueNode> nodeLookup = new Dictionary<string, DialogueNode>();
 

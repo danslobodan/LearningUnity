@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: 8818d895-ebc1-4895-b76f-8c03ff18b804
   m_EditorClassIdentifier: 
   isPlayerSpeaking: 1
-  text: 
+  text: Hi game.
   children:
   - 3cdecda3-9bbb-412c-a3e3-4bc9ba2fd317
+  - 40fc979a-0e12-4057-8820-9e67b973e400
   rect:
     serializedVersion: 2
-    x: 314
-    y: 267
+    x: 95
+    y: 143
     width: 200
     height: 100
 --- !u!114 &-5749951825621904360
@@ -35,12 +36,55 @@ MonoBehaviour:
   m_Name: 3cdecda3-9bbb-412c-a3e3-4bc9ba2fd317
   m_EditorClassIdentifier: 
   isPlayerSpeaking: 0
-  text: 
+  text: Wanna play?
   children: []
   rect:
     serializedVersion: 2
-    x: 703
-    y: 433
+    x: 359
+    y: 292
+    width: 200
+    height: 100
+--- !u!114 &-5595286163232696656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dfecb090d0b7ab40b1e4eab9303119b, type: 3}
+  m_Name: b88d771c-683c-4a17-8f5c-96be16f9127c
+  m_EditorClassIdentifier: 
+  isPlayerSpeaking: 1
+  text: Who are you?
+  children:
+  - ee5b4ab8-77a8-409f-8130-9d6cf1f823cd
+  rect:
+    serializedVersion: 2
+    x: 335
+    y: 144
+    width: 200
+    height: 100
+--- !u!114 &-258512589830522253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dfecb090d0b7ab40b1e4eab9303119b, type: 3}
+  m_Name: ee5b4ab8-77a8-409f-8130-9d6cf1f823cd
+  m_EditorClassIdentifier: 
+  isPlayerSpeaking: 0
+  text: I'm your friendly NPC
+  children: []
+  rect:
+    serializedVersion: 2
+    x: 628
+    y: 275
     width: 200
     height: 100
 --- !u!114 &11400000
@@ -53,12 +97,37 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c7806522a30f174b89c09d548346148, type: 3}
-  m_Name: New Dialogue 1
+  m_Name: Default Dialogue
   m_EditorClassIdentifier: 
   nodes:
   - {fileID: 5463212469326267287}
   - {fileID: -8550666350963054599}
   - {fileID: -5749951825621904360}
+  - {fileID: -5595286163232696656}
+  - {fileID: 2461581102725166435}
+  - {fileID: -258512589830522253}
+  offset: {x: 0, y: 200}
+--- !u!114 &2461581102725166435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dfecb090d0b7ab40b1e4eab9303119b, type: 3}
+  m_Name: 40fc979a-0e12-4057-8820-9e67b973e400
+  m_EditorClassIdentifier: 
+  isPlayerSpeaking: 0
+  text: What's your name?
+  children: []
+  rect:
+    serializedVersion: 2
+    x: 51
+    y: 288
+    width: 200
+    height: 100
 --- !u!114 &5463212469326267287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,9 +141,10 @@ MonoBehaviour:
   m_Name: 1061a435-24e8-4dd4-b094-f7f27241ed97
   m_EditorClassIdentifier: 
   isPlayerSpeaking: 0
-  text: 
+  text: Hi Player!
   children:
   - 8818d895-ebc1-4895-b76f-8c03ff18b804
+  - b88d771c-683c-4a17-8f5c-96be16f9127c
   rect:
     serializedVersion: 2
     x: 0

@@ -8,7 +8,10 @@ namespace RPG.Dialogue
 {
     public class PlayerConversant : MonoBehaviour
     {
+        [SerializeField] string playerName;
+
         Dialogue currentDialogue;
+        AIConversant currentConversant;
         DialogueNode currentNode;
         bool isChoosing = false;
 
@@ -26,9 +29,10 @@ namespace RPG.Dialogue
             return currentNode.Text;
         }
 
-        public void StartDialogue(Dialogue dialogue)
+        public void StartDialogue(AIConversant conversant, Dialogue dialogue)
 		{
             currentDialogue = dialogue;
+            currentConversant = conversant;
             currentNode = dialogue.RootNode;
             onConversationUpdated();
 		}
@@ -45,7 +49,15 @@ namespace RPG.Dialogue
             Next();
         }
 
-        public void Next()
+		internal string GetCurrentConversantName()
+		{
+            if (isChoosing)
+                return playerName;
+
+            return currentConversant.ConversantName;
+		}
+
+		public void Next()
 		{
             var children = currentDialogue.GetChildren(currentNode);
             if (!children.Any())
@@ -68,6 +80,7 @@ namespace RPG.Dialogue
 
         public void Quit()
 		{
+            currentConversant = null;
             currentDialogue = null;
             currentNode = null;
             isChoosing = false;

@@ -550,6 +550,7 @@ MonoBehaviour:
   choicePrefab: {fileID: 7088011726179369347, guid: 350dac54a96f0194ea7a362002273c44,
     type: 3}
   quitButton: {fileID: 8905442007382833557}
+  conversantName: {fileID: 8394370315521177833}
 --- !u!1 &3309613305471640912
 GameObject:
   m_ObjectHideFlags: 0

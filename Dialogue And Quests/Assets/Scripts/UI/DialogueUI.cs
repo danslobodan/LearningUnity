@@ -15,6 +15,7 @@ namespace RPG.UI
 		[SerializeField] Transform choiceRoot;
 		[SerializeField] GameObject choicePrefab;
 		[SerializeField] Button quitButton;
+		[SerializeField] TextMeshProUGUI conversantName;
 
 		private void Start()
 		{
@@ -36,6 +37,7 @@ namespace RPG.UI
 			if (!playerConversant.IsActive)
 				return;
 
+			conversantName.text = playerConversant.GetCurrentConversantName();
 			AIResponse.SetActive(!playerConversant.IsChoosing);
 			choiceRoot.gameObject.SetActive(playerConversant.IsChoosing);
 

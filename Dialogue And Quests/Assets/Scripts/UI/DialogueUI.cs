@@ -2,32 +2,50 @@ using UnityEngine;
 using RPG.Dialogue;
 using TMPro;
 using UnityEngine.UI;
+using System.Linq;
 
-public class DialogueUI : MonoBehaviour
+namespace RPG.UI
 {
-	PlayerConversant playerConversant;
-	[SerializeField] TextMeshProUGUI AIText;
-	[SerializeField] Button nextButton;
-
-	private void Start()
+	public class DialogueUI : MonoBehaviour
 	{
-		playerConversant = GameObject
-			.FindGameObjectWithTag("Player")
-			.GetComponent<PlayerConversant>();
+		PlayerConversant playerConversant;
+		[SerializeField] TextMeshProUGUI AIText;
+		[SerializeField] Button nextButton;
+		[SerializeField] Transform choiceRoot;
+		[SerializeField] GameObject choicePrefab;
 
-		UpdateUI();
-		nextButton.onClick.AddListener(Next);
-	}
+		private void Start()
+		{
+			playerConversant = GameObject
+				.FindGameObjectWithTag("Player")
+				.GetComponent<PlayerConversant>();
 
-	private void Next()
-	{
-		playerConversant.Next();
-		UpdateUI();
-	}
+			UpdateUI();
+			nextButton.onClick.AddListener(Next);
+		}
 
-	private void UpdateUI()
-	{
-		AIText.text = playerConversant.GetText();
-		nextButton.gameObject.SetActive(playerConversant.HasNext());
+		private void Next()
+		{
+			playerConversant.Next();
+			UpdateUI();
+		}
+
+		private void UpdateUI()
+		{
+			AIText.text = playerConversant.GetText();
+			nextButton.gameObject.SetActive(playerConversant.HasNext());
+			foreach (Transform item in choiceRoot)
+			{
+				Destroy(item.gameObject);
+			}
+
+			playerConversant.GetChoices()
+				.ToList()
+				.ForEach(choice =>
+				{
+					var choiceUI = Instantiate(choicePrefab, choiceRoot);
+					choiceUI.GetComponentInChildren<TextMeshProUGUI>().text = choice;
+				});
+		}
 	}
 }

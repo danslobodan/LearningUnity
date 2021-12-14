@@ -23,6 +23,12 @@ namespace RPG.Dialogue
             return currentNode.Text;
         }
 
+        public IEnumerable<string> GetChoices()
+		{
+            yield return "I've lived here all my life.";
+            yield return "I come from Newtown.";
+		}
+
         public void Next()
 		{
             var children = currentDialogue.GetChildren(currentNode);
